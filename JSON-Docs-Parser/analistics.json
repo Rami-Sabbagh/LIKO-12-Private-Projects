@@ -1,0 +1,3 @@
+{
+  "Types": [ "any", "list", "Quad", "unknown", "nil", "Image", "table", "ImageData", "integer", "image", "string", "imagedata", "function", "number", "boolean" ]
+}

@@ -1,0 +1,1456 @@
+LK12;OSData;DiskOS;DiskGame;V3;192x128;C:none;CLvl:0;
+___luacode___
+
+local dbg = true
+
+local sheets = {
+	peng = SpriteSheet(image(math.decompress(math.b64dec("H4sIAAAAAAACC+2ayZLlJhBF9+9rdKsFKqJW6jE6bEd443/x5xuSKROQ3tAhtRyRshcF4rXyMN4L/PkH3j5+/P3Pz79+fMC9/Yu394/bFB7AGGCqD2WwpDEi7XPmYeGcjXkWxY94gLe3T59uJT4eIWS6fw/MBZgVxmzGFXLvsdbupvcBUnw1wpzRJPl7H2pK8sJz4miB7wVo6b/t9ABo9gFYuywBwH9rof9zxPH7S+kXGcDUdADg0VJhzBgC3w3QWhlhl26BBAAqgKjTpani8j68w5yAa2GUDtQAPxCglXVM6Z3y/nl/d25dP3++5fpmX2wCxiCdAMDermvbALUJ+oAm23aRLuK98hwA6fPliyykFTIgU6ekOaVLYYfZbAG0AT3QJPda4MuXr1+/ffv+/SbikwBxIgHk+zTpzCldy6YG6IA3BrHdGaUj3mkXwI+GhQGkPPsAAK/vbYCuB9geaW/S2Z5WbxRgiD8QoACA8loAJABYzBYSYNQC2AtpJ3mvdAMAGwGWAuD/YAAsRsgxUAcx4NsLZRUzg5WgXbv2eR4l8ABTAfB/5gAQJtnYhfi8XohoIaMGiW/9v2AxNQDYAdhtgRGv3QKYAgAhyAhCpqzS0sdj8cUaDEqPFrKuwu8HeKfFJAARWFtW3ljHtgKhdqAQH3U632MSQCxdq7sBHsfXy6En0wwgf5FFEJ+NNPwKAuviKlHe5mQH/Fg49zK2x4D/oF+xwrK21ohDauUBi/c+A3Buo7hPRiSHX6jgBxsgtsArYvz3+wHehXq/Ig1NmpmO8wO/BtBPGhimuUF40g8cCtCrX2ykjXnRDxwK0NmBztC0+vp5P3AWgJlGhqZVZy/4gSMBOjXNK7xtgBryk37gcADmZ3YNTZGfT/qBYwGwZSHR1ugA4EE/cGwLkBxtAZDU6AjgeT9wIABpM+ZnSgCIfkDo+2YMcD9g9/3AgbNQjL/pMiGKAUB2ACHcBPCgHzgSgDqQW53hNQjyWDKi5MgI2atRx0w/A6hNeM5CRn5mMVVOehUZx4W1ThAgA5QfgJX2SNIP4DSAEBAYQKhaiskVAApyLcngfvIky0oLP1CKHy/mKADH9HyoW3DFnxzLynp5+cFGaXCHcLSc/t/7gU7vN36gfXs1P8DmjaEf6JbVi/kBIR4GfmB4/nEhPyBOOEzvB9Apm4v5AXHCwbenlw11fDE/0Ov9qbMvvaO8kB+YuhMO7gcGAFfzA02IhrYOm930wfnHdfxAmuVJkCICFIFpwXEYwJX8wCROOIpApu31BeJ4gM+bF/IDcbsZtF9e9b4pAJ2+z2o7dbHUXPa3+YHwxaDt+YZ/2vJPAUMu1FSc3nI/YJf984FjV+KgHDMAXA7YrqjHBTWeKDRtUzwocnG+cDpA0Pg5ohhA0sO0mc47xLg4mCNqfnCCmFtd3aEu2/tZ8Du3ivOO/eLsB2f6Aanv+0+fJI5fbgGp7+d5bgI+z6C8Kqervo9jUAbs56X5om1wG+v7gICxgcn9ab+LAydaSqHvs0FhBBKQBunIxYsWS+vY8RhRzMUxwKXBwrZ1CoDJ+0YQ4q07F27uJhwPkLuI0DZSXc5s3pQrLbDlSE9ZCtKNrbzJLo6TDHNY2LzB1VzHQa/+zuhCJGXoe3wnugu4tWitWqWWOx8g3bdJWtQ0xwN3ANxq2vOD81sgXVaxfAzk60J9l5EAq1emsYchOzqcOATSIA5tIA2KZQDYA3DeTIfDgjqK6g/cehJAsAP5gKAYFNsdD7BLgHGSopnerb6o/5Nde6SrK6RP13MAgjzO+/38AtOKkUFhpj/OOqFwiNkgeza62kLG5xwpQZ/L2+H1AtPqNm5shQw/eNONJ7cSAWVUR+BOEhO3cqThuKGiXuAgc6pymFKSsoL6D7Fz03CaFHr5fOBifkABFEABFEABFEABFEABFEABFEABFEABFEABFEABFEABFEABFEABFEABFEABFEABFEABFEABFEABFEABFEABFEABFEABFEABdp7/AB9tiqiUYAAA"),"gzip",9)),24,16),
+	tiles = SpriteSheet(image(math.decompress(math.b64dec("H4sIAAAAAAACC+3UwQmAMAADwL/T2D6q0gFEVPDjLo4vCBVxAKFygQxwELLMIeZx26d1zGGIR4h9brpX2sryD0BK6WqtgPSoCQEAAHwMKPdZ7rTWG+3KlZoQAADAt4C28gAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA3DkBwFHYIZRgAAA="),"gzip",9)),24,16),
+	fish = SpriteSheet(image(math.decompress(math.b64dec("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"),"gzip",9)),24,16),
+	mermaid = SpriteSheet(image(math.decompress(math.b64dec("H4sIAAAAAAACC+2c244cKQyG7+tpyr4odTSXHKJVEmlv8i55/MUG6oihd6ahqQiiaFpyo/LH2f6p/vkD8OP7v7//+fX9A77hH8DHxzTfvAyAATAA/i4A4CJ//av22gBuYaUiuvBVe22A8Hx8IOT8+7S9DQC68sg4+AV7EwC01uYczNihVL82AIBrQIsWRQcLdszbawMAhga0WQdFu58B9n094EewoednHMS8PVO/NkBcQgz9BXmJke1+Ckv2JgDOBxrCIAHwIMvZ3QIq1W8BgNbwEJAcJDsRAgp2fMj1GwC4hyulUaukg/QF17qoUYEwx41FV18J9etPYrBWK0UOSNuANVq5f8Ii6/x3RrLDm/YBP4IMWAnAuUj2NICh/uH67hO8oweMBX4+GsFDoDXUpGeA6z4AX39uSTAdOgAMz0Fz6QIeFOC7AFM9QP4TI9dnEngDALgB7IqGSxeAmxgOQLtB4kZ5coqT/6G+hrnZNJj40fw08M9f1HLxEDRhAbu3LFoMB/wXlPyNOgBu1eEnhgZUVwdg858cFFahWN8RNAbwo8I9P7io1BUAIoDgHjVCrC4gVpsDoNYG1jrpANDivtKp5Crk9r/sN2pOYgB1LKlJsHVPYoTT8NEbo26+kXkH4hhKebiNLw1SNmKdJvoNO3FwgBtSGOOEIFgPHaHflpUIGNmcT8G5N+eF/qrU4lMN3jFAjCAR7gkQ/CeEvvthEobMBuAL9A7gFsAlnCRhF6P3TxA3MrXstmEIIXAAaJzt/AyA959anw5CHNS6Egiy2dK36wXTehT2Le8JmEYzAqUi0kHY3IVeMB2CxjUooUMz9YjznLOl/eoFUzqqigTGoKFIvl+9YJolAiqUZLCUK0ExXY3GQeb0hIy90ka2I6Acg2PwCHBNVez0AEgFCZsdGgJssTERaORVyFwnwl5PQLjOk4O9WpZlko71YUegj8Kxbq8HJHNJe3tbgPVcET5llxgT/ISsvTXAE2WvJyBl9bJ20yWAjXoCJBK+J3vlnTj8/38AzrWgJ6SGWcn+0rTKklgGSwEZJeMh6Amfsb8WQMMlm+jlMAQpTuccutcD0oAF+0sB1CXl7NdADshQCAdWPUHqooL9lQAumEkBFEIykgGMlbWMkv2Vk/gofHEwsAVkHBdAbr+T01zV83TTfCHg52pawoP/UkAj6AlRb5hlvaFGTBxDSd9sCxFgDEcs+OMaCGemo4dP6A01AELec5fjZ4ZwmqFBtR7XYCVN6glP6A1VIjJ9SLAvTGCMP02z8rdmXLwSrFc9YTk5eNYbliYA+0N0ZNBu9NM6YsxuKzhrCYlpWtYbqpyF4IzghoA15/0Ydnl4WU8o6g11DnPBseg9DRRD8UBSkinqCXl7rdMo7Es5sVNK+9TPq46rxwNgABTirt6VpqngfTwQIdwPAA4xQa8EU2bc7PzHbiWaSYhDaAM9xDS3AYgnIneEXDUmDoy7BTgd1eKlK7pzs4pkxnY7hibOqcB6ljsEBFGgYP97BWBdT4ej4+UYD5yd9dmdPjeDKejD6uK9ChoZu05hjbV9AhxiW3WOB/xdVux3N57OMUAiHqDWv+NO3DAqGafRATAABsAAGAADYAAMgEoAcJebu5L77X+o4JUAMTeE90psnQl6vrpb7IH14mG3aZWi/81/qOB1AMDXDbD1DxW8DGC9tmftrZK71yXIYL9vEBT1AX/xEB54JwDY3h+gvKj/mQC4DUDUBzQzGEupOnrP/CZzYHst2oscfO/b2I4TWyl9IAgE9P6A5cuHXQOk9QF+E4Wyoga77oK8PsBJdf+DJf0C5PQB1wV82Sx1ubufHsjrAzP/ZkS/XVDSB2a+gWv6Dcqe1AdGUD8ABsAAGAADYAAMgAEwAAbAAOiv/Af+1xRclGAAAA=="),"gzip",9)),24,16),
+}
+
+local GameData = {
+	["cur_screen"] = "play",
+	["lives"] = 3,
+	["mermaid_spawned"] = false,
+}
+
+local game_world = nil
+World = class("World")
+function World:initialize()
+	game_world = self
+	self.cam = {
+		camx = 0,
+		camy = 0,
+	}
+	self.tiles = {}
+	self.land_map = {
+		{-4*16,-2*16,6*16,4*16},
+		{{-2*16,-2*16},{2*16,-6*16},{2*16,-2*16}},
+		{{2*16,-2*16},{4*16,0},{2*16,2*16}},
+	}
+	self.wall_map = {
+		--{-2*16,-2*16,4*16,4*16},
+	}
+	self.metas = {}
+	self.things = {}
+	self:Populate()
+end
+function World:Populate()
+	local spawner = FishSpawner:new()
+	local peng = Penguin:new()
+	local bucket = FishBucket:new()
+	bucket:SetPos(0,-16)
+end
+
+function World:Process(t)
+	clear(12)	
+	for i=1,#self.land_map do
+		if(#self.land_map[i] == 3)then
+			drawer.triangle(self.land_map[i],false,7)
+		end
+		--drawer.tri(self.land_map[i])
+		if(#self.land_map[i] == 4)then
+			drawer.rect(self.land_map[i],false,7)
+		end
+	end
+	-- Process metas and things
+	local p_list = {self.metas, self.things}
+	for i = 1,#p_list do
+		for k,v in pairs(p_list[i]) do
+			-- Call PostInit function
+			if(v.PostInit ~= nil and v.init_done ~= true)then
+				v:PostInit()
+				v.init_done = true
+			end
+			-- Process all things
+			if(v.Process ~= nil)then
+				v:Process(t)
+			end
+		end
+	end
+	-- draw shadows
+	table.sort(self.things, World.ShadowSort)
+	for k in ipairs(self.things)do
+		if(self.things[k].DrawShadow ~= nil)then self.things[k]:DrawShadow() end
+	end
+	-- draw things
+	table.sort(self.things, World.DrawSort)
+	for k in ipairs(self.things)do
+		self.things[k]:DrawMe(t)
+	end
+end
+function World.ShadowSort(obj1,obj2)
+	if(obj1.pos[2] < obj2.pos[2])then return true end
+	return false
+end
+function World.DrawSort(obj1,obj2)
+	if(obj1.pos[2] + obj1.pos[3] < obj2.pos[2] + obj2.pos[3])then return true end
+	return false
+end
+function World:WorldAt(x,y)
+	-- type of world at point
+	-- 0 = water, 1 = ground, 2 = wall
+	local t_at = 0
+	for i = 1,#self.land_map do
+		-- tri collision
+		if(#self.land_map[i] == 3 and tri.point_inside({x,y},self.land_map[i]))then
+			t_at = 1
+		end
+		-- rect collision
+		if(#self.land_map[i] == 4 and mymath.in_rect({x,y}, self.land_map[i]))then
+			t_at = 1
+		end
+		if(col == 1)then break end
+	end
+	for i = 1,#self.wall_map do
+		-- tri collision
+		if(#self.wall_map[i] == 3 and tri.point_inside({x,y},self.wall_map[i]))then
+			t_at = 2
+		end
+		-- rect collision
+		if(#self.wall_map[i] == 4 and mymath.in_rect({x,y}, self.wall_map[i]))then
+			t_at = 2
+		end
+		if(t_at == 2)then break end
+	end
+	return t_at
+end
+function World:WorldRect(rect, pos)
+	-- type of world rect overlaps at least partially
+	-- 0 = water, 1 = ground, 2 = wall
+	local t_at = 0
+	pos = pos or {0,0}
+	local box = {rect[1],rect[2],rect[3],rect[4]}
+	box[1] = box[1] + pos[1]
+	box[2] = box[2] + pos[2]
+	local verts = { {box[1],box[2]}, {box[1]+box[3],box[2]}, {box[1]+box[3],box[2]+box[4]}, {box[1],box[2]+box[4]} }
+	for i=1,4 do
+		if(self:WorldAt(verts[i][1],verts[i][2]) == 1)then
+			t_at = 1
+			break
+		end
+	end
+	for i=1,4 do
+		if(self:WorldAt(verts[i][1],verts[i][2]) == 2)then
+			t_at = 2
+			break
+		end
+	end
+	return t_at
+end
+function World:Remove(thing)
+	for k,v in pairs(self.things)do
+		if(v == thing)then
+			table.remove(game_world.things, k)
+		end
+	end
+	thing = nil
+end
+
+-- Fish Spawner --
+-- Spawns fish in the ocean
+FishSpawner = class("FishSpawner")
+function FishSpawner:initialize()
+	self.spawn_timer = 0
+	self.spawn_interval = 60 * 3
+	self.spawn_interval_variance = 30
+	-- commonality dictionary
+	self.fish = {
+		[SnailFish] = 1,
+		[IceCod] = 1,
+		[KingCrab] = 0.25,
+		--["Squid"] = 0.1,
+		[LeopardSeal] = 0.1,
+	}
+	table.insert(game_world.metas,self)
+end
+function FishSpawner:Process(t)
+	-- Spawn a fish!
+	if(self.spawn_timer == 0)then
+		self.spawn_timer = self.spawn_interval + mymath.round(math.random(-self.spawn_interval_variance / 2, self.spawn_interval_variance / 2))
+		self:SpawnRandom()
+	end
+	if(self.spawn_timer ~= 0)then
+		self.spawn_timer = mymath.move_towards(self.spawn_timer, 0, t*60)
+	end
+end
+function FishSpawner:SpawnRandom()
+	-- Find the possible fish we could spawn
+	local fish_list = {}
+	for k,v in pairs(self.fish)do
+		if(math.random(0,1) <= v)then table.insert(fish_list, k) end
+	end
+	if(#fish_list ~= 0)then
+		local fish_to_spawn = fish_list[math.random(1,#fish_list)]
+		self:SpawnFish(fish_to_spawn)
+	end
+end
+function FishSpawner:SpawnFish(fish)
+	assert(fish ~= nil, "FisherSpawner:SpawnFish - Given fish class does not exist")
+	local new_fish = fish:new()
+	local ang = math.random(0, math.pi*2)
+	new_fish:SetPos(math.sin(ang) * 135, math.cos(ang) * 135)
+end
+
+-- Penguin Class --
+-- The playable character
+Penguin = class("Penguin")
+function Penguin:initialize()
+	self.player = 1
+	self.states = {
+		["active"] = true,
+		["alive"] = true,
+		["moving"] = false,
+		["casting"] = false,
+		["reeling"] = false,
+	}
+	self.pos = {0,0,0}
+	self.dir = 4
+	self.control_dir = {0,0}
+	self.lure_pos = {0,0}
+	self.lure_vec = {0,0}
+	self.lure_fish = nil
+	self.caster = {
+		castPeriod = 45,
+		cast_time = 0,
+		ripple_timer = 0,
+	}
+	self.anims = {
+		idle={
+			dir_type = 4, loops = true,
+			{	length = -1, {sheets.peng,5,2,2,nil,8},{sheets.peng,3,2,2,nil,8},{sheets.peng,1,2,2,nil,8}, },
+		},
+		walk={
+			dir_type = 4, loops = true,
+			{	length = 10, {sheets.peng,53,2,2,nil,8},{sheets.peng,51,2,2,nil,8},{sheets.peng,49,2,2,nil,8}, },
+			{	length = 10, {sheets.peng,5,2,2,nil,8},{sheets.peng,3,2,2,nil,8},{sheets.peng,1,2,2,nil,8}, },
+			{	length = 10, {sheets.peng,101,2,2,nil,8},{sheets.peng,99,2,2,nil,8},{sheets.peng,97,2,2,nil,8}, },
+			{	length = 10, {sheets.peng,5,2,2,nil,8},{sheets.peng,3,2,2,nil,8},{sheets.peng,1,2,2,nil,8}, },
+		},
+		walkReel = {
+			dir_type = 4, loops = true,
+			{	length = 10, {sheets.peng,59,2,2,nil,8},{sheets.peng,57,2,2,nil,8},{sheets.peng,55,2,2,nil,8}, },
+			{	length = 10, {sheets.peng,11,2,2,nil,8},{sheets.peng,9,2,2,nil,8},{sheets.peng,7,2,2,nil,8}, },
+			{	length = 10, {sheets.peng,107,2,2,nil,8},{sheets.peng,105,2,2,nil,8},{sheets.peng,103,2,2,nil,8}, },
+			{	length = 10, {sheets.peng,11,2,2,nil,8},{sheets.peng,9,2,2,nil,8},{sheets.peng,7,2,2,nil,8}, },
+		},
+		idleReel={
+			dir_type = 4, loops = true,
+			{	length = -1, {sheets.peng,11,2,2,nil,8},{sheets.peng,9,2,2,nil,8},{sheets.peng,7,2,2,nil,8}, },
+		},
+		dead={
+			dir_type = 4, loops = true,
+			{	length = -1, {sheets.peng,155,2,2,nil,8},{sheets.peng,153,2,2,nil,8},{sheets.peng,151,2,2,nil,8}, },
+		},
+	}
+	self.anim_cur = "idle"
+	self.frame_cur = 1
+	self.frame_time = 0
+	table.insert(game_world.things,self)
+end
+function Penguin:Process(t)
+	if(self.states.active)then
+		self:DoCamera(t)
+		if(self.states.alive)then
+			self:DoInput()
+			self:DoMovement(t)
+			if(self:Fishing())then self:DoFishingRod(t) end
+		end
+	end
+end
+function Penguin:DoCamera(t)
+	if(self.player == 1)then
+		local cx,cy = self:CamTarget()[1],self:CamTarget()[2]
+		game_world.cam.camx, game_world.cam.camy = cx,cy
+	end
+end
+function Penguin:CamTarget()
+	local cx, cy = self.pos[1],self.pos[2]
+	if(self:Fishing())then
+		cx, cy = self.lure_pos[1],self.lure_pos[2]
+	end
+	return {cx,cy}
+end
+function Penguin:DoInput()
+	-- reset the table
+	self.control_dir[1] = 0
+	self.control_dir[2] = 0	
+	local p = self.player
+	if(btn(1,p) or btn(2,p))then
+		if(not (btn(1,p) and btn(2,p)) )then
+			if(btn(1,p))then
+				self.control_dir[1] = -1
+			else
+				self.control_dir[1] = 1
+			end
+		end
+	end
+	if(btn(3,p) or btn(4,p))then
+		if(not (btn(3,p) and btn(4,p)) )then
+			if(btn(3,p))then
+				self.control_dir[2] = -1
+			else
+				self.control_dir[2] = 1
+			end
+		end
+	end
+	
+	if(btnp(5,p))then
+		local c = true;
+		if(not self:Fishing())then
+			self:DoCast()
+			c = false
+		end
+		if(self.states.casting and c)then
+			self:DoReel()
+		end
+	end
+end
+function Penguin:DoMovement(t)
+	if(self:CanMove())then
+		if(self.control_dir[1] ~= 0 or self.control_dir[2] ~= 0)then
+			self.states.moving = true
+			local mySpeed = 100
+			if(self.states.casting or self.states.reeling) then mySpeed = 50 end
+			local angle = math.atan2(self.control_dir[1],-self.control_dir[2])
+			local rx = math.sin(angle) * mySpeed * t
+			local ry = -math.cos(angle) * mySpeed * t
+			
+			-- where we want to go is blocked
+			if(game_world:WorldAt(self.pos[1] + rx, self.pos[2] + ry) ~= 1)then
+				local perc = 0
+				local angOff = 0
+				-- If we are already touching an edge
+				if(game_world:WorldAt(self.pos[1] + math.sin(angle) * 2, self.pos[2] - math.cos(angle) * 2) ~= 1)then
+					-- try to wallslide
+					local lt,rt = 0,0
+					while(game_world:WorldAt(self.pos[1]+math.sin(angle+lt) * 3, self.pos[2] - math.cos(angle+lt) * 3) ~= 1 and lt > -math.pi/1.9)do
+						lt = lt - math.pi/32 end
+					while(game_world:WorldAt(self.pos[1]+math.sin(angle+rt) * 3, self.pos[2] - math.cos(angle+rt) * 3) ~= 1 and rt < math.pi/1.9)do
+						rt = rt + math.pi/32 end
+					if(math.abs(lt) ~= rt)then
+						if(math.abs(lt) > rt)then
+							angOff = rt else
+							angOff = lt
+						end
+					end
+				end
+				-- snap to edge
+				while(game_world:WorldAt(self.pos[1] + math.sin(angle+angOff) * mySpeed * t * (perc+0.01), self.pos[2] - math.cos(angle+angOff) * mySpeed * t * (perc + 0.01)) == 1 and perc < 1)do
+					perc = perc + 0.01
+				end
+				self.pos[1] = self.pos[1] + math.sin(angle+angOff) * mySpeed * t * perc
+				self.pos[2] = self.pos[2] - math.cos(angle+angOff) * mySpeed * t * perc
+			else
+				self.pos[1] = self.pos[1] + rx
+				self.pos[2] = self.pos[2] + ry
+			end
+			
+			-- look for objects to kick
+			for k,v in pairs(game_world.things)do
+				if(v.kickable == true and v:CanBeKickedNow() and mymath.distance(v.pos[1],v.pos[2],self.pos[1],self.pos[2]) < v.hit_radius)then
+					v:BeKicked(math.atan2(v.pos[1] - self.pos[1], v.pos[2] - self.pos[2]))
+				end
+			end
+		end
+		if(self.control_dir[1] == 0 and self.control_dir[2] == 0)then
+			self.states.moving = false
+		end
+		if(self:CanTurn())then
+			-- Find which direction we're facing
+			if(math.abs(self.control_dir[1]) == 1)then
+				if(self.control_dir[1] == -1)then
+					self.dir = 1
+				else self.dir = 2 end
+			end
+			if(math.abs(self.control_dir[2]) == 1)then
+				if(self.control_dir[2] == -1)then
+					self.dir = 3
+				else self.dir = 4 end
+			end
+		end
+	end
+end
+function Penguin:CanMove()
+	if(not self.states.active)then return false end
+	return true
+end
+function Penguin:Moving() return not(self.control_dir[1] == 0 and self.control_dir[2] == 0) end
+function Penguin:CanTurn() if(self.states.casting)then return false end	return true end
+function Penguin:Fishing() return (self.states.casting or self.states.reeling) end
+function Penguin:DoFishingRod(t)
+	if(self.states.casting)then
+		local angle = math.atan2(self.lure_vec[1],-self.lure_vec[2])
+		local lure_speed = 125
+		local cast = self.caster
+		-- lure is casting forward
+		if(cast.cast_time > 0)then
+			self.lure_pos[1] = self.lure_pos[1] + math.sin(angle) * lure_speed * t
+			self.lure_pos[2] = self.lure_pos[2] - math.cos(angle) * lure_speed * t
+			cast.cast_time = cast.cast_time - 1 * t * 60
+		end
+		if(cast.cast_time <= 0)then
+			cast.cast_time = 0
+			-- If the lure hits ground it automatically reels in
+			if(game_world:WorldAt(self.lure_pos[1],self.lure_pos[2]) ~= 0)then
+				self:DoReel()
+			end
+			-- Lure follows player when too far
+			local lineLength = 100
+			local lureDist = mymath.distance(self.lure_pos[1],self.lure_pos[2],self.pos[1],self.pos[2])
+			if(lureDist > lineLength)then
+				local ang = math.atan2(self.lure_pos[1]-self.pos[1],self.lure_pos[2]-self.pos[2])
+				local dist = lureDist - lineLength
+				self.lure_pos[1] = self.lure_pos[1] - math.sin(ang) * dist
+				self.lure_pos[2] = self.lure_pos[2] - math.cos(ang) * dist
+			end
+			-- ripple effect
+			if(cast.ripple_timer <= 0)then
+				cast.ripple_timer = 30
+				Splash.MakeAt(self.lure_pos[1],self.lure_pos[2], "ripple")
+			elseif(cast.ripple_timer > 0)then
+				cast.ripple_timer = cast.ripple_timer - t * 60
+			end
+		end
+	end
+	if(self.states.reeling)then
+		local cast = self.caster 
+		local angle = math.atan2(self.pos[1] - self.lure_pos[1], self.pos[2] - self.lure_pos[2])
+		local lure_speed = 300
+		-- We've finished reeling
+		if(mymath.distance(self.pos[1], self.pos[2], self.lure_pos[1], self.lure_pos[2]) < 12)then
+			if(self.lure_fish ~= nil)then
+				self.lure_fish:Launch(angle)
+				self.lure_fish = nil
+			end
+			self.lure_pos[1],self.lure_pos[2] = 0,0
+			self.states.reeling = false
+			return -- end here
+		else
+			self.lure_pos[1] = self.lure_pos[1] + math.sin(angle) * t * lure_speed
+			self.lure_pos[2] = self.lure_pos[2] + math.cos(angle) * t * lure_speed
+			-- Pull the fish with us
+			if(self.lure_fish ~= nil)then
+				self.lure_fish:SetPos(self.lure_pos[1],self.lure_pos[2])
+			end
+			-- ripple effect
+			if(cast.ripple_timer <= 0)then
+				cast.ripple_timer = 3
+				Splash.MakeAt(self.lure_pos[1],self.lure_pos[2], "ripple")
+			elseif(cast.ripple_timer > 0)then
+				cast.ripple_timer = cast.ripple_timer - t * 60
+			end
+		end
+	end
+	if(self.lure_fish == nil)then
+		-- Look for fish near lure
+		local fish = nil
+		for i,obj in pairs(game_world.things)do
+			if(obj.fishable == true and obj.hooked_by == nil and obj.pos[3] <= 4 and mymath.distance(obj.pos[1],obj.pos[2],self.lure_pos[1],self.lure_pos[2]) <= obj.hit_radius)then
+				self:HookFish(obj)
+			 break end
+		end
+	end
+	if(self.lure_fish ~= nil)then
+		-- We hit the shore
+		if(game_world:WorldAt(self.lure_pos[1],self.lure_pos[2]) == 1)then
+			self.lure_fish:Launch(math.atan2(self.pos[1] - self.lure_pos[1], self.pos[2] - self.lure_pos[2]))
+			self.lure_fish = nil
+		end
+	end
+end
+function Penguin:DoCast()
+	if(not self.states.casting)then
+		self.states.casting = true
+		self.caster.cast_time = self.caster.castPeriod
+		self.lure_pos[1],self.lure_pos[2] = self.pos[1],self.pos[2]
+		if(not self:Moving())then
+			local dirTab = {{-1,0},{1,0},{0,-1},{0,1}}
+			self.lure_vec[1],self.lure_vec[2] = dirTab[self.dir][1],dirTab[self.dir][2]
+		else
+			self.lure_vec[1],self.lure_vec[2] = self.control_dir[1],self.control_dir[2]
+		end
+	end
+end
+function Penguin:DoReel()
+	if(not self.states.casting or self.states.reeling)then return end
+	self.states.casting = false
+	self.caster.cast_time = 0
+	self.caster.ripple_timer = 0
+	self.states.reeling = true
+	self.caster.reel_time = self.caster.reel_period
+end
+function Penguin:HookFish(fish)
+	assert(fish ~= nil, "Penguin:HookFish : Tried to catch nil fish")
+	self.lure_fish = fish
+	if(fish.Hooked ~= nil)then
+		fish:Hooked()
+	end
+	self:DoReel()
+end
+function Penguin:Kick(object)
+	assert(object.kickable ~= nil, "Penguin:Kick - tried to kick an unkickable object")
+	local angle = math.atan2(object.pos[1] - self.pos[1], object.pos[2] - self.pos[2])
+	object:BeKicked(angle)
+end
+function Penguin:Kill()
+	self.states.alive = false
+	self.states.casting = false
+	self.states.reeling = false
+	animator.StartAnim(self, "dead")
+	local my_ghost = Ghost:new()
+	my_ghost.pos[1],my_ghost.pos[2] = self.pos[1],self.pos[2] + 1
+end
+function Penguin:DrawShadow()
+	drawer.draw16(sheets.fish, 1, self.pos[1], self.pos[2] - 1)
+end
+function Penguin:DrawMe(t)
+	-- Decide on animation --
+	if(self.states.alive)then
+		if(self:Moving())then
+			if(self:Fishing() and self.anim_cur ~= "walkReel")then
+				self:StartAnim("walkReel") end
+			if(not self:Fishing() and self.anim_cur ~= "walk")then
+				self:StartAnim("walk") end
+		else
+			if(self:Fishing() and self.anim_cur ~= "idleReel")then
+				self:StartAnim("idleReel") end
+			if(not self:Fishing() and self.anim_cur ~= "idle")then
+				self:StartAnim("idle") end
+		end
+	end
+	
+	animator.ProcessAnim(self,t)
+	
+	-- draw the fishing line
+	if(self:Fishing())then
+		local rodTip = {{-9,-16},{7,-16},{-1,-16},{0,-15}}
+		local rx,ry = rodTip[self.dir][1],rodTip[self.dir][2]
+		local rh = 0
+		if(self.caster.cast_time > self.caster.castPeriod - 25)then
+			rh = 25 - (self.caster.castPeriod - self.caster.cast_time)
+		end
+		color(13)
+		drawer.line(self.pos[1] + rx,self.pos[2] + ry,self.lure_pos[1],self.lure_pos[2] - rh)
+	end
+end
+function Penguin:StartAnim(anim, frame)
+	assert(self.anims[anim] ~= nil, "Penguin:StartAnim - Tried to start non-existent animation")
+	frame = frame or 1
+	self.anim_cur = anim
+	self.frame_cur = frame
+	self.frame_time = self.anims[anim][1].length
+end
+Ghost = class("Ghost")
+function Ghost:initialize()
+	self.pos = {0,0,0}
+	self.appear_timer = 60
+	self.anims = {
+		idle = {
+			loops = true,
+			{ length = 10, {sheets.peng, 13,2,2,nil,16}},
+			{ length = 10, {sheets.peng, 15,2,2,nil,16}},
+			{ length = 10, {sheets.peng, 17,2,2,nil,16}},
+			{ length = 10, {sheets.peng, 19,2,2,nil,16}},
+			{ length = 10, {sheets.peng, 21,2,2,nil,16}},
+		}
+	}
+	animator.InitMe(self)
+	table.insert(game_world.things, self)
+	animator.StartAnim(self,"idle")
+end
+function Ghost:DrawMe(t)
+	if(self.appear_timer == 0)then
+		animator.ProcessAnim(self,t)
+	else
+		self.appear_timer = mymath.move_towards(self.appear_timer, 0, t * 60)
+	end
+end
+
+-- Thing --
+-- Abstract base for world objects
+Thing = class("Thing")
+function Thing:initialize()
+	self.pos = {0,0,0}
+	self.vel = {0,0,0}
+	self.mass = 1
+	self.kickable = false
+	self.hitbox = {-4,-4,8,8}
+	self.states = {
+		["submerged"] = false,
+	}
+	table.insert(game_world.things,self)
+end
+function Thing:DoPhysics(t)
+	-- Not in water and velocity ~= 0
+	if(not self.states.submerged and vector.length({self.vel[1], self.vel[2]}) > 0)then
+		-- If we're grounded, decelerate
+		if(self.pos[3] <= 0)then
+			local decel = 1.25
+			local new_vel = mymath.move_towards2({self.vel[1],self.vel[2]}, {0,0}, decel * t)
+			self.vel[1],self.vel[2] = new_vel[1],new_vel[2]
+		end
+	
+		self.pos[1] = self.pos[1] + self.vel[1] * t * 60
+		self.pos[2] = self.pos[2] + self.vel[2] * t * 60
+	end
+	-- we're midair
+	if(self.pos[3] > 0 or self.vel[3] > 0)then
+		local terminal_vel = -5
+		-- gravity
+		if(self.vel[3] ~= terminal_vel)then
+			self.vel[3] = mymath.move_towards(self.vel[3], terminal_vel, 0.095 * t * 60)
+		end
+		-- Process vertical movement
+		self.pos[3] = self.pos[3] + self.vel[3]
+	end
+	-- We hit water or ground
+	if(self.pos[3] <= 0) then
+		if(self.vel[3] < 0)then
+			self.pos[3] = 0
+			self.vel[3] = 0
+			if(self.HitGround ~= nil)then self:HitGround() end
+		end
+		if(not self.states.submerged and game_world:WorldRect(self.hitbox, {self.pos[1],self.pos[2]} ) == 0)then
+			self:EnterWater()
+		end
+	end
+end
+function Thing:Impulse(force)
+	assert(type(force) == "table" and (#force == 3 or #force == 2), "Thing:Impulse - arg1 must be either vector2D or vector3D")
+	force[3] = force[3] or 0 -- in case a vector2D is passed
+	local mult = 1 - math.max(self.mass / 10, 0)
+	self.vel[1] = self.vel[1] + force[1] * mult
+	self.vel[2] = self.vel[2] + force[2] * mult
+	self.vel[3] = self.vel[3] + force[3] * mult
+end
+function Thing:EnterWater()
+	self.states.submerged = true
+	self.vel[1],self.vel[2] = 0,0
+	Splash.MakeAt(self.pos[1],self.pos[2])
+	Splash.MakeAt(self.pos[1],self.pos[2],"ripple")
+end
+function Thing:ExitWater()
+	self.states.submerged = false
+	Splash.MakeAt(self.pos[1],self.pos[2])
+	Splash.MakeAt(self.pos[1],self.pos[2],"ripple")
+end
+function Thing:Launch(angle)
+	if(self.states.submerged)then self:ExitWater() end
+	local exit_speed = 0.75
+	self.vel[1],self.vel[2],self.vel[3] = 0,0,0
+	self:Impulse({math.sin(angle) * exit_speed, math.cos(angle) * exit_speed, 2.25 })
+end
+function Thing:CanBeKickedNow()
+	if(self.pos[3] == 0 and vector.length(self.vel) < 1 and not self.states.submerged)then
+		return true end
+	return false
+end
+function Thing:BeKicked(angle, kick_force)
+	kick_force = kick_force or 1
+	self:Impulse({math.sin(angle) * kick_force, math.cos(angle) * kick_force, 0.35 * kick_force})
+end
+function Thing:Destroy()
+	game_world:Remove(self)
+end
+function Thing:SetPos(x,y)
+	self.pos[1] = x
+	self.pos[2] = y
+end
+function Thing:DrawShadow()
+	drawer.draw16(sheets.fish, 1, self.pos[1], self.pos[2]-1)
+end
+
+
+-- Fish Bucket --
+-- Erni's bucket that he kicks fish into
+FishBucket = class("FishBucket", Thing)
+function FishBucket:initialize()
+	Thing.initialize(self)
+	self.states = {
+		["submerged"] = false,
+	}
+	self.fish = {
+	}
+	self.kickable = true
+	self.hit_radius = 14
+	self.fishable = true
+	self.mass = 2
+	
+	self.grow_timer = 0
+end
+function FishBucket:Process(t)
+	self:DoMovement(t)
+	self:AcceptFish()
+end
+function FishBucket:DoMovement(t)
+	Thing.DoPhysics(self,t)
+end
+function FishBucket:AcceptFish()
+	if(self.states.submerged)then return end
+	for k,v in pairs(game_world.things)do
+		if(v.catchable and not v.states.submerged and v.pos[3] <= 6 and mymath.distance(self.pos[1],self.pos[2],v.pos[1],v.pos[2]) < self.hit_radius)then
+			-- Add fish to bucket
+			if(self.fish[v.class] == nil)then self.fish[v.class] = 1
+			else self.fish[v.class] = self.fish[v.class] + 1 end
+			v:Destroy()
+			self.grow_timer = 15
+		end
+	end
+end
+function FishBucket:EmptyToWorld()
+	for k,v in pairs(self.fish)do
+	 local i = v
+		while(i > 0)do
+			local fish = k:new()
+			fish:SetPos(self.pos[1], self.pos[2])
+			i = i-1
+		end
+		self.fish[k] = nil
+	end
+end
+function FishBucket:EnterWater()
+	Thing.EnterWater(self)
+	self:EmptyToWorld()
+end
+function FishBucket:DrawMe(t)
+	if(not self.states.submerged)then
+		if(self.grow_timer > 0)then
+			drawer.draw(sheets.fish, {97,2,3,nil,-22}, self.pos[1], self.pos[2] - self.pos[3])
+			self.grow_timer = self.grow_timer - t * 60
+			if(self.grow_timer < 0)then self.grow_timer = 0 end
+		else
+			drawer.draw(sheets.fish, {49,2,2,nil,-16}, self.pos[1], self.pos[2] - self.pos[3])
+		end
+	end
+	local fishy = 1
+	for k,v in pairs(self.fish)do
+		print(k.name.." "..v, 8, 9 * fishy)
+		fishy = fishy +1
+	end
+end
+
+-- Fish Base --
+-- Basis for all catchable fish
+
+FishBase = class("FishBase", Thing)
+function FishBase:initialize()
+	Thing.initialize(self)
+	self.dir = 2
+	self.states = {
+		["alive"] = true,
+		["submerged"] = true,
+	}
+	self.anims = {
+		idle={
+			dir_type = 2, loops = true,
+			{ length = 10, {sheets.fish,3,2,2} },
+			{ length = 20, {sheets.fish,51,2,2} },
+		},
+	}
+	animator.InitMe(self)
+	self.dir_type = 2
+	self.spr_btm = 4
+	
+	self.swim_ang = 0
+	self.swim_timer = 0
+	self.stay_timer = 20
+	self.hooked_by = nil
+	
+	self.fishable = true
+	self.catchable = true
+	self.kickable = true
+	self.hit_radius = 12
+	self.points = 5
+	
+	animator.StartAnim(self,"idle")
+end
+function FishBase:PostInit()
+	if(game_world:WorldRect(self.hitbox, {self.pos[1],self.pos[2]} ) > 0)then
+		self.states.submerged = false
+	end
+end
+function FishBase:Process(t)
+	self:DoMovement(t)
+end
+function FishBase:DoMovement(t)
+	Thing.DoPhysics(self,t)
+	-- turn dir
+	if(self.dir_type == 2)then
+		if(self.vel[1] < -0.1 and self.dir == 2)then self.dir = 1 end
+		if(self.vel[1] > 0.1 and self.dir == 1)then self.dir = 2 end
+	elseif(self.dir_type == 4)then
+		-- angle quadrants
+		if(vector.length({self.vel[1],self.vel[2],self.vel[3]}) > 0.1)then
+			local angle = math.atan2(self.vel[1],self.vel[2])
+			self.dir = mymath.angle_to_cardinal(angle)
+		end
+	end
+	-- free swimming
+	if(self.hooked_by == nil and self.states.submerged)then
+		-- Swim around
+		local swim_speed = 15
+		if(self.swim_timer > 0)then
+			-- proposed position
+			local px = self.pos[1] + math.sin(self.swim_ang) * swim_speed * t
+			local py = self.pos[2] + math.cos(self.swim_ang) * swim_speed * t
+			if(game_world:WorldRect(self.hitbox, {px,py}) > 0)then
+				self.swim_ang = mymath.normalize(self.swim_ang + math.pi/4)
+			else
+				self.pos[1] = px
+				self.pos[2] = py
+			end
+			self.swim_timer = self.swim_timer - 1 * t * 60
+		end
+		-- Choose a new direction to move in
+		if(self.swim_timer <= 0)then
+			self.swim_timer = 60 * (1 + math.random(0,2))
+			-- Move back towards the center if too far
+			if(mymath.distance(0,0,self.pos[1],self.pos[2]) > 130)then
+				-- Our time to hang around is up. Swim away
+				if(self.stay_timer <= 0)then
+					self.swim_ang = mymath.normalize(math.atan2(self.pos[1],self.pos[2]))
+				-- Go back towards the center
+				else
+					self.swim_ang = mymath.normalize(math.atan2(self.pos[1],self.pos[2]) + math.pi)
+				end
+			else
+				self.swim_ang = math.random(-math.pi, math.pi)
+			end
+		end
+		-- Tick down how much time we want to stay
+		if(self.stay_timer > 0)then
+			self.stay_timer = mymath.move_towards(self.stay_timer, 0, t)
+		end
+	end
+	if(mymath.distance(0,0,self.pos[1],self.pos[2]) > 256)then
+		self:Destroy()
+	end
+end
+function FishBase:Hooked(catcher)
+	self.hooked_by = catcher
+	self.stay_timer = 0
+end
+function FishBase:CanBeKickedNow()
+	if(Thing.CanBeKickedNow(self) and self.hooked_by == nil)then return true end
+	return false
+end
+function FishBase:ExitWater(angle)
+	-- Call the super method first
+	Thing.ExitWater(self)
+	self.hooked_by = nil
+end
+function FishBase:Kill()
+	self:Destroy()
+end
+function FishBase:DrawMe(t)
+	if(not self.states.submerged)then
+		animator.ProcessAnim(self,t)
+	end
+end
+
+-- Ice Cod --
+-- Standard common fish
+IceCod = class("IceCod", FishBase)
+function IceCod:initialize()
+	FishBase.initialize(self)
+end
+
+-- Snail Fish --
+-- Common small fish worth less points
+SnailFish = class("SnailFish", FishBase)
+function SnailFish:initialize()
+	FishBase.initialize(self)
+	self.anims = {
+		idle={
+			dir_type = 2, loops = true,
+			{ length = 10, {sheets.fish,99,2,1,nil,5} },
+			{ length = 20, {sheets.fish,123,2,1,nil,4} },
+		},
+	}
+end
+
+-- King Crab --
+-- Rarer catch that scuttles back into the water
+KingCrab = class("KingCrab", FishBase)
+function KingCrab:initialize()
+	FishBase.initialize(self)
+	self.anims = {
+		idle={
+			dir_type = 2, loops = true,
+			{ length = -1, {sheets.fish,193,4,2,nil,8} },
+		},
+		move={
+			dir_type = 2, loops = true,
+			{ length = 20, {sheets.fish,193,4,2,nil,8} },
+			{ length = 20, {sheets.fish,241,4,2,nil,8} },
+		},
+	}
+	self.stun_timer = 0
+end
+function KingCrab:Process(t)
+	FishBase.Process(self,t)
+	-- scuttle back to safety!
+	if(self.stun_timer == 0)then
+		if(self.anim_cur ~= "move")then
+			animator.StartAnim(self,"move")
+		end
+		if(not self.states.submerged and self.pos[3] == 0)then
+			local mov_ang = math.atan2(self.pos[1], self.pos[2])
+			local mov_speed = 0.2
+			self.vel[1] = math.sin(mov_ang) * mov_speed
+			self.vel[2] = math.cos(mov_ang) * mov_speed
+		end
+	end
+	-- countdown stun_timer
+	if(self.stun_timer > 0)then
+		self.stun_timer = mymath.move_towards(self.stun_timer, 0, t * 60)
+	end
+end
+function KingCrab:EnterWater()
+	FishBase.EnterWater(self)
+	animator.StartAnim(self,"idle")
+	self.stun_timer = 0
+end
+function KingCrab:Launch(ang)
+	FishBase.Launch(self, ang)
+	self:GetAir()
+end
+function KingCrab:BeKicked(angle, force)
+	Thing.BeKicked(self,angle,force)
+	self:GetAir()
+end
+function KingCrab:GetAir()
+	animator.StartAnim(self,"idle")
+end
+function KingCrab:HitGround()
+	self.stun_timer = 60
+end
+
+-- Leopard Seal --
+-- Hostile creature that will try to bite you
+LeopardSeal = class("LeopardSeal", FishBase)
+function LeopardSeal:initialize()
+	FishBase.initialize(self)
+	self.dir_type = 4
+	self.anims = {
+		idle={
+			loops = true, dir_type = 4,
+			{ length = -1, {sheets.fish,17,4,6,nil,6}, {sheets.fish,5,8,4,nil,6}, {sheets.fish,13,4,4,nil,6}, },
+		},
+		bite={
+			dir_type = 4,
+			{ length = 15, {sheets.fish,21,4,6,nil,6}, {sheets.fish,101,8,4,nil,6}, {sheets.fish,109,4,4,nil,6},},
+		},
+	}
+	self.catchable = false
+	self.hostile = true
+	
+	self.my_prey = nil
+	self.hunt_timer = 0
+	self.move_timer = 0
+end
+function LeopardSeal:Process(t)
+	FishBase.Process(self,t)
+	-- We're on ground and ready to EAT
+	if(not self.states.submerged)then
+		-- We look for new prey every 1.5s
+		if(self.hunt_timer <= 0)then self:FindPrey() else self.hunt_timer = self.hunt_timer - t * 60 end
+		-- We have a target; let's eat em!
+		if(self.my_prey ~= nil and self.pos[3] == 0)then
+			local ang2prey = math.atan2(self.my_prey.pos[1] - self.pos[1], self.my_prey.pos[2] - self.pos[2])
+			local move_speed = 1.5
+			-- Dash and bite!
+			if(self.move_timer <= 0)then
+				self.vel[1] = math.sin(ang2prey) * move_speed
+				self.vel[2] = math.cos(ang2prey) * move_speed
+				animator.StartAnim(self, "bite")
+				self.move_timer = 45
+			else self.move_timer = self.move_timer - t * 60 end
+			-- bite prey
+			for k,v in pairs(game_world.things)do
+				if(self:IsPrey(v) and mymath.distance(v.pos[1],v.pos[2],self.pos[1],self.pos[2]) < self.hit_radius)then
+					if(v.Kill ~= nil)then
+						v:Kill()
+					end
+				end
+			end
+		end
+	end
+end
+function LeopardSeal:FindPrey()
+	local prey = {}
+	-- find possible prey in map
+	for k,v in pairs(game_world.things)do
+		if(self:IsPrey(v))then
+			table.insert(prey,v)
+		end
+	end
+	if(#prey > 0)then
+		table.sort(prey, function (a,b) if(mymath.distance(self.pos[1],self.pos[2],a.pos[1],a.pos[2]) < mymath.distance(self.pos[1],self.pos[2],b.pos[1],b.pos[2]))then return true end return false end)
+		self.my_prey = prey[1]
+	else
+		self.my_prey = nil
+	end
+	self.hunt_timer = 90
+end
+function LeopardSeal:IsPrey(obj)
+	local prey = {"Penguin", "IceCod", "SnailFish"}
+	if(table.has(prey, obj.class.name) and obj.states.alive == true and not obj.states.submerged)then return true end
+	return false
+end
+function LeopardSeal:OnAnimEnd()
+	if(self.anim_cur == "bite")then
+		animator.StartAnim(self, "idle")
+	end
+end
+
+-- Mermaid --
+-- Very rare 'fish'
+Mermaid = class("Mermaid", FishBase)
+function Mermaid:initialize()
+	FishBase.initialize(self)
+	self.states = {
+		["submerged"] = true,
+		["midair"] = false,
+		["walking"] = false,
+		["fell"] = false,
+	}
+	self.anims = {
+		idle={
+			dir_type = 2, loops = true,
+			{ length = -1, {sheets.mermaid,1,4,4,nil,14} },
+		},
+		move={
+			dir_type = 2, loops = true,
+			{ length = 10, {sheets.mermaid,5,4,4,nil,14} },
+			{ length = 10, {sheets.mermaid,1,4,4,nil,14} },
+			{ length = 10, {sheets.mermaid,9,4,4,nil,14} },
+			{ length = 10, {sheets.mermaid,1,4,4,nil,14} },
+		},
+		midair = {
+			dir_type = 2, loops = true,
+			{ length = -1, {sheets.mermaid,97,6,2,nil,6} },
+		},
+		land = {
+			dir_type = 2,
+			{ length = 5, {sheets.mermaid,97,6,2,nil,6} },
+			{ length = 20, {sheets.mermaid,145,6,2,nil,6} },
+			{ length = 100, {sheets.mermaid,193,6,2,nil,6} },
+		},
+		getup = {
+			 dir_type = 2,
+			{ length = 60, {sheets.mermaid,241,6,4,nil,14} },
+		},
+		angry = {
+			dir_type = 2, repeats = 4,
+			{ length = 15, {sheets.mermaid,103,4,4,nil,14} },
+			{ length = 15, {sheets.mermaid,107,4,4,nil,14} },
+		}
+	}
+end
+function Mermaid:Process(t)
+	FishBase.Process(self,t)
+	-- Mermaid specific behaviour on ground
+	if(not self.states.submerged and not self.states.midair)then
+		-- We've fallen and need to get back up
+		if(self.states.fell and vector.length({self.vel[1],self.vel[2]}) == 0)then
+			self.states.fell = false
+			animator.StartAnim(self,"getup")
+		end
+		-- Move back into the water
+		if(self.states.walking)then
+			local mov_ang = math.atan2(self.pos[1], self.pos[2])
+			local mov_speed = 0.3
+			self.vel[1] = math.sin(mov_ang) * mov_speed
+			self.vel[2] = math.cos(mov_ang) * mov_speed
+		end
+	end
+end
+function Mermaid:OnAnimEnd()
+	if(self.anim_cur == "land")then
+		self.states.fell = true
+	elseif(self.anim_cur == "getup")then
+		animator.StartAnim(self,"angry")
+	elseif(self.anim_cur == "angry")then
+		animator.StartAnim(self,"move")
+		self.states.walking = true
+	end
+end
+function Mermaid:EnterWater()
+	FishBase.EnterWater(self)
+	self.states.fell = false
+	self.states.walking = false
+end
+function Mermaid:Launch(ang)
+	FishBase.Launch(self, ang)
+	self:GetAir()
+end
+function Mermaid:BeKicked(angle, force)
+	Thing.BeKicked(self,angle,force)
+	self:GetAir()
+end
+function Mermaid:GetAir()
+	self.states.midair = true
+	self.states.walking = false
+	animator.StartAnim(self,"midair")
+end
+function Mermaid:HitGround()
+	self.states.midair = false
+	animator.StartAnim(self,"land")
+end
+
+-- Effects --
+Splash = class("Splash")
+function Splash.MakeAt(x, y, effect)
+	effect = effect or "splash"
+	assert(type(effect) == "string", "Splash:EffectAt - arg3 must be string")
+	local me = Splash:new()
+	me.pos[1],me.pos[2] = x,y
+	animator.StartAnim(me,effect)
+end
+function Splash:initialize()
+	self.pos = {0,0,0}
+	self.anims = {
+		splash={
+			{ length = 5, {sheets.fish,337,2,2,nil,8} },
+			{ length = 5, {sheets.fish,339,2,2,nil,8} },
+			{ length = 5, {sheets.fish,341,2,2,nil,8} },
+			{ length = 5, {sheets.fish,343,2,2,nil,8} },
+			{ length = 5, {sheets.fish,345,2,2,nil,8} },
+			{ length = 5, {sheets.fish,347,2,2,nil,8} },
+			{ length = 5, {sheets.fish,349,2,2,nil,8} },
+			{ length = 5, {sheets.fish,351,2,2,nil,8} },
+		},
+		ripple={
+			{ length = 7, {sheets.fish,289,2,2} },
+			{ length = 7, {sheets.fish,291,2,2} },
+			{ length = 7, {sheets.fish,293,2,2} },
+			{ length = 7, {sheets.fish,295,2,2} },
+			{ length = 7, {sheets.fish,297,2,2} },
+		}
+	}
+	table.insert(game_world.things,self)
+end
+function Splash:Process(t)
+	
+end
+function Splash:DrawMe(t)
+	animator.ProcessAnim(self,t)
+end
+function Splash:OnAnimEnd()
+	game_world:Remove(self)
+	self = nil
+end
+
+-- Game Loop --
+function _init()
+	clear(12)
+	game_world = World:new()
+end
+
+function _update(t)
+	clear()
+	if(game_world ~= nil)then
+		game_world:Process(t)
+	end
+end
+
+-- Animator Class --
+-- General utility for complex sprite animation
+animator = {}
+-- Adds the variables needed for animation
+function animator:InitMe()
+	self.frame_cur = self.frame_cur or 1
+	self.frame_time = self.frame_time or -1
+	self.loop_count = self.loop_count or 0
+end
+function animator:ProcessAnim(t)
+	-- don't animate nothing, duh
+	if(self.anim_cur == nil)then return end
+	-- let's go
+	local anim = self.anims[self.anim_cur]
+	local frame = anim[self.frame_cur]
+	local sprite = frame[1]
+	local yOff = 0
+	local flip = 1
+	-- transforms when using directional animations
+	if(self.dir ~= nil)then
+		-- flip the sprite when bi or quad directional
+		if((anim.dir_type == 2 or anim.dir_type == 4) and self.dir == 1)then flip = -1 end
+		-- sprite dir type is quat-directional
+		if(anim.dir_type == 4)then
+			local dict = {2,2,1,3}
+			sprite = frame[dict[self.dir]]
+		end
+	end
+	if(sprite[6] ~= nil)then yOff = sprite[6] end
+	local draw_sprite = { sprite[2], sprite[3], sprite[4] }
+	drawer.draw(sprite[1], draw_sprite, self.pos[1], self.pos[2] - self.pos[3] - yOff, flip)
+	
+	-- Timing
+	if(frame.length == -1)then self.frame_time = -1 end
+	if(self.frame_time ~= -1 and self.frame_time > 0)then
+		self.frame_time = self.frame_time - 1 * t * 60
+		if(self.frame_time < 0)then self.frame_time = 0 end
+	end
+	-- Current frame is done
+	if(self.frame_time == 0)then
+		-- Is there an upcoming frame?
+		if(anim[self.frame_cur + 1] ~= nil)then
+			self.frame_cur = self.frame_cur + 1
+			self.frame_time = anim[self.frame_cur].length
+		-- reached the end of anim
+		else
+			-- restart anim
+			if(anim.loops or anim.repeats)then
+				-- anim repeats set num times
+				if(anim.repeats)then
+					if(self.loop_count > 0)then 
+						self.frame_cur = 1
+						self.frame_time = anim[1].length
+						self.loop_count = self.loop_count - 1
+					elseif(self.OnAnimEnd ~= nil)then
+						-- Repeat animation finished
+						self:OnAnimEnd()
+					end
+				end
+				-- infinite loop
+				if(anim.loops and not anim.repeats)then
+					self.frame_cur = 1
+					self.frame_time = anim[self.frame_cur].length
+				end
+			end
+			-- Animation finished
+			if(not anim.loops and not anim.repeats and self.OnAnimEnd ~= nil)then
+				self:OnAnimEnd()
+			end
+		end
+	end
+end
+function animator.StartAnim(self, anim)
+	if(self.anims[anim] ~= nil)then
+		self.anim_cur = anim
+		self.frame_cur = 1
+		self.frame_time = self.anims[anim][1].length
+		self.loop_count = self.anims[anim].repeats or 0
+	end
+end
+-- draw16 class --
+-- Helps drawing sprites
+drawer = {}
+function drawer.draw(sheet, sprite, x, y, sx, sy, r)
+	assert(type(sheet) == "table", "drawer must have a valid sprite sheet") assert(type(sprite) == "table", "drawer sprite must be a valid table")
+	x = x or 0
+	y = y or 0	
+	sx = sx or 1
+	sy = sy or 1
+	r = r or 0
+	-- sprite { index, width, height, xoff, yoff}
+	sprite[2] = sprite[2] or 1 -- default size is 8
+	sprite[3] = sprite[3] or 1
+	sprite[4] = sprite[4] or sprite[2]/2 * -8
+	sprite[5] = sprite[5] or sprite[3]/2 * -8
+	local xoff,yoff = sprite[4] * sx, sprite[5] * sy
+	
+	SpriteGroup(sprite[1], math.floor(x + xoff - game_world.cam.camx + screenWidth()/2), math.floor(y + yoff - game_world.cam.camy + screenHeight()/2), sprite[2], sprite[3], sx, sy, r,sheet)
+end
+function drawer.draw16(sheet, sprind, x, y, xflip, yflip, r)
+	drawer.draw(sheet, {sprind, 2,2}, x, y, xflip,yflip, r)
+end
+function drawer.tile16(sheet, sprite, x, y, xflip, yflip, r)
+	assert(type(sheet) == "table", "drawer must have a valid sprite sheet")
+	xflip = xflip or false
+	yflip = yflip or false
+	r = r or 0
+	local sx = 1
+	if(xflip)then sx = -1 end if(yflip)then sy = -1 end
+	SpriteGroup(sprite, math.floor(x*16 - game_world.cam.camx + screenWidth()/2), math.floor(y*16 + -game_world.cam.camy + screenHeight()/2), 2, 2, sx, sy, r, sheet)
+end
+function drawer.line(x1,y1,x2,y2)
+	for k in pairs({x1,y1,x2,y2})do
+		assert(type(k) == "number", "drawer.line - all args must be numbers")
+	end
+	x1 = x1 - game_world.cam.camx + screenWidth()/2
+	y1 = y1 - game_world.cam.camy + screenHeight()/2
+	x2 = x2 - game_world.cam.camx + screenWidth()/2
+	y2 = y2 - game_world.cam.camy + screenHeight()/2
+	line(x1 , y1 , x2 , y2 )
+end
+function drawer.rect(rec, fill, colour)
+	local rt = {rec[1],rec[2],rec[3],rec[4]}
+	rt[1] = rt[1] - mymath.round(game_world.cam.camx) + screenWidth()/2
+	rt[2] = rt[2] - mymath.round(game_world.cam.camy) + screenHeight()/2
+	rect(rt[1],rt[2],rt[3],rt[4], fill, colour)
+end
+function drawer.triangle(tri, fill, colour)
+	local tr = {{tri[1][1],tri[1][2]},{tri[2][1],tri[2][2]},{tri[3][1],tri[3][2]}}
+	fill = fill or false
+	-- offset to camera space
+	for k,v in pairs(tr)do
+		v[1] = v[1] - mymath.round(game_world.cam.camx) + screenWidth()/2
+		v[2] = v[2] - mymath.round(game_world.cam.camy) + screenHeight()/2
+	end
+	triangle(tr[1][1],tr[1][2],tr[2][1],tr[2][2],tr[3][1],tr[3][2],fill,colour)
+end
+
+
+function table.has(tab, value)
+	assert(type(tab) == "table", "table.has - arg1 must be table")
+	for k,v in pairs(tab)do
+		if(v == value)then return true end
+	end
+	return false
+end
+mymath = {}
+-- Round float to nearest int
+function mymath.round(x)
+	if x%2 ~= 0.5 then
+		return math.floor(x+0.5)
+	end
+	return x-0.5
+end
+-- Distance between two points
+function mymath.distance(x1, y1, x2, y2)
+	for k,v in pairs({x1,y1,x2,y2})do
+		assert(type(v) == "number", "distance - all args must be numbers")
+	end
+	return math.sqrt( (x2-x1)^2 + (y2-y1)^2 )
+end
+-- Angle between two points
+function mymath.angle(x1, y1, x2, y2)
+	for k,v in pairs({x1,y1,x2,y2})do
+		assert(type(v) == "number", "angle - all args must be numbers")
+	end
+	local rx,ry = x2-x1, y2-y1
+	local ang = math.atan2(rx,ry)
+	if(ang > math.pi)then ang = ang - math.pi end
+	return ang
+end
+function mymath.in_rect(point, rect)
+	local px,py = point[1],point[2]
+	local rx,ry,rw,rh = rect[1],rect[2],rect[3],rect[4]
+	if(px >= rx and px < rx + rw and py >= ry and py < ry + rh)then return true end
+	return false
+end
+function mymath.rect_overlap(rect1, rect2)
+	local x1,y1,w1,h1 = rect1[1],rect1[2],rect1[3],rect1[4]
+	local x2,x2,w2,h2 = rect2[1],rect2[2],rect2[3],rect2[4]
+	if(x1 < x2+w2 and x2 < x1+w1 and y1 < y2+h2 and y2 < y1+h1)then return true end
+	return false
+end
+function mymath.move_towards(value, goal, amount)
+	for k,v in pairs({value,goal,amount})do
+		assert(type(v) == "number", "mymath.move_towards - arg "..tostring(k).." must be a number!")
+	end
+	amount = math.abs(amount)
+	if(value < goal)then
+		if(value + amount > goal)then return goal end
+		return value + amount
+	end
+	if(value > goal)then
+		if(value - amount < goal)then return goal end
+		return value - amount
+	end
+end
+function mymath.move_towards2(value, goal, amount)
+	for k,v in pairs({value,goal})do
+		assert(type(v) == "table" and #v == 2, "mymath.move_towards2 - value and goal must be vector2D")
+	end
+	assert(type(amount) == "number", "mymath.move_towards2 - arg 'amount' must be a number")
+	local angle = math.atan2(goal[1] - value[1], goal[2] - value[2])
+	local dist = mymath.distance(value[1],value[2],goal[1],goal[2])
+	if(dist < amount)then return goal
+	else
+		local x = value[1] + math.sin(angle) * amount
+		local y = value[2] + math.cos(angle) * amount
+		return {x,y}
+	end
+end
+function mymath.normalize(angle)
+	assert(type(angle) == "number", "mymath.normalize - arg1 must be a number")
+	local ang = angle
+	while(ang > math.pi*2)do
+		ang = ang - math.pi*2
+	end
+	while(ang < 0)do
+		ang = ang + math.pi*2
+	end
+	return ang
+end
+function mymath.angle_to_cardinal(angle)
+	local a = mymath.normalize(angle)
+	-- left
+	if(a < math.pi*1.75 and a > math.pi*1.25)then return 1 end
+	-- right
+	if(a > math.pi*0.25 and a < math.pi*0.75)then return 2 end
+	-- down
+	if(a > math.pi*1.75 or a < math.pi*0.25)then return 4 end
+	-- up
+	return 3
+end
+
+vector={}
+function vector.add(vec1,vec2) return {vec1[1]+vec2[1], vec1[2]+vec2[2]} end
+function vector.sub(vec1,vec2) return {vec1[1]-vec2[1], vec1[2]-vec2[2]} end
+function vector.length(vec)
+	assert(type(vec)=="table" and (#vec == 3 or #vec == 2), "vector:length - arg must be 2D or 3D vector.")
+	if(#vec == 2)then vec = {vec[1],vec[2],0} end
+	return math.sqrt(vec[1]^2 + vec[2]^2 + vec[3]^2)
+end
+function vector.cross(v1,v2)
+	assert(type(v1)=="table" and type(v2)=="table", "vector.cross - both args must be vector2D or vector3D.")
+	if(v1[3] == nil)then v1 = {v1[1], v1[2], 0} end
+	if(v2[3] == nil)then v2 = {v2[1], v2[2], 0} end
+	local cx = v1[2]*v2[3] - v1[3]*v2[2]
+	local cy = v1[3]*v2[1] - v1[1]*v2[3]
+	local cz = v1[1]*v2[2] - v1[2]*v2[1]
+	return {cx,cy,cz}
+end
+function vector.dot(v1,v2)
+ assert(type(v1)=="table" and type(v2)=="table", "vector.dot - both args must be vector2D or vector3D.")
+ if(v1[3] == nil)then v1 = {v1[1], v1[2], 0} end
+	if(v2[3] == nil)then v2 = {v2[1], v2[2], 0} end
+ return v1[1]*v2[1] + v1[2]*v2[2] + v1[3]*v2[3]
+end
+function vector.same_side(p1,p2,lineA,lineB)
+ local lzero = {lineB[1]-lineA[1],lineB[2]-lineA[2]}
+	local cp1 = vector.cross(lzero, {p1[1]-lineA[1],p1[2]-lineA[2]})
+	local cp2 = vector.cross(lzero, {p2[1]-lineA[1],p2[2]-lineA[2]})
+	if(vector.dot(cp1, cp2) >= 0)then return true
+	else return false end
+end
+
+tri={}
+function tri.point_inside(p, tri)
+	if(vector.same_side(p, tri[1],tri[2],tri[3]) and vector.same_side(p, tri[2],tri[1],tri[3]) and vector.same_side(p, tri[3],tri[1],tri[2])) then return true
+	else return false end
+end
+function tri.new(origin, bOff, cOff)
+	assert(type(origin) == "table" and type(bOff) == "table" and type(cOff) == "table", "tri.new - all args must be vector2D")
+	local a = origin or {0,0}
+	local b = vector.add(origin, bOff)
+	local c = vector.add(origin, cOff)
+	return {a,b,c}
+end
+function tri.tri_overlap(tri1, tri2)
+	local col = false
+	for i=1,3 do
+		if(tri.point_inside(tri2[i], tri1))then
+			col = true
+			break end
+	end
+	return col
+end
+function tri.quad_overlap(tri, quad)
+	local col = false
+	for i =1,4 do
+		if(tri.point_inside(quad[i], tri))then
+			col = true
+			break end
+	end
+	return col
+end
+
