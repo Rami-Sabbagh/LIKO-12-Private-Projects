@@ -106,7 +106,7 @@ function tileObject:initialize(x,y,w,h,spriteID)
   objectBase.initialize(self,x,y,w,h, spriteID)
 
   self.customFilter = testBit(self.spriteFlags,2)
-  self.bounce = testBit(self.spriteFlags,3) and 0.9
+  self.bounce = testBit(self.spriteFlags,3) and 0.9 or 0
 
   if self.customFilter then
     self.c_down = testBit(self.spriteFlags,4)
@@ -116,55 +116,55 @@ function tileObject:initialize(x,y,w,h,spriteID)
   end
 end
 
---=rGonna check my old code for the args
---=h Okay
---=r It should return false for no collision, 
---=r or left/right/up/down for collision and the side that it did collide with
---=h left/right/.. is the for side collided with or ?
-function tileObject:collide(other) -- The arguments needed..
+function tileObject:filter(other)
+  if other.type ~= "Dynamic" then return false end
+  
+  local collideType = "touch"--self.bounce and "bounce" or "slide"
+
+  if not self.customFilter then return collideType end
+  
+  if self.c_left then --Left
+    if other.x + other.w <= self.x then return collideType end
+  end
+  if self.c_up then --Up
+    if other.y + other.h <= self.y then return collideType end
+  end
+  if self.c_right then --Right
+    if other.x >= self.x + self.w then return collideType end
+  end
+  if self.c_down then --Down
+    if other.y >= self.y + self.h then return collideType end
+  end
+
+  return false
+end
+
+function tileObject:collide(other,collision)
   if other.type ~= "Dynamic" then return false end
   
   local allSides = not self.customFilter
-  
-  --My old code, from the bump demo, you can check the bump demo in LIKO-12
-  --=h Is checkbit the same as testBi t heYreE?
+
   if allSides or self.c_left then --Left
     if other.x + other.w <= self.x then
-      if self.bounce then
-        other:impactForce(other.velocity * other.mass * -self.bounce)
-      else
-        other:applyForce(other.velocity:projectOn(xAxis)) --Respond force
-      end -- shouldn't this be -1 * 
+      other:impactForce(other.velocity:projectOn(xAxis) * other.mass * -(1+self.bounce)) --Respond force
       return "left"
     end
   end
   if allSides or self.c_up then --Up
     if other.y + other.h <= self.y then
-      if self.bounce then -- how much is self.bounce?
-        other:impactForce(other.velocity * other.mass * -self.bounce)
-      else
-        other:applyForce(-1 * other.velocity:projectOn(yAxis)) --Respond force
-      end
+      other:impactForce(other.velocity:projectOn(yAxis) * other.mass * -(1+self.bounce)) --Respond force
       return "up"
     end
   end
   if allSides or self.c_right then --Right
     if other.x >= self.x + self.w then
-      if self.bounce then
-        other:impactForce(other.velocity * other.mass * -self.bounce)
-      else
-        other:applyForce(-1 * other.velocity:projectOn(xAxis)) --Respond force
-      end
+      other:impactForce(other.velocity:projectOn(xAxis) * other.mass * -(1+self.bounce)) --Respond force
       return "right"
     end
   end
   if allSides or self.c_down then --Down
     if other.y >= self.y + self.h then
-      if self.bounce then
-        other:impactForce(other.velocity * other.mass * -self.bounce)
-      else
-        other:applyForce(other.velocity:projectOn(yAxis)) --Respond force
-      end
+      other:impactForce(other.velocity:projectOn(yAxis) * other.mass * -(1+self.bounce)) --Respond force
       return "down"
     end
   end
@@ -198,6 +198,8 @@ function dynamicObject:initialize(x,y,w,h,spriteID)
   self.velocity = vector()
   self.acceleration = vector()
   self.sigma_forces = vector()
+
+  self.collisions = {}
 end
 
 function dynamicObject:impactForce(f)    
@@ -206,10 +208,19 @@ end
 
 function dynamicObject:applyForce(f) 
   self.sigma_forces = self.sigma_forces + f;
-end
+end --=r Hello!
 
 function dynamicObject:move(x,y)
-  self.x, self.y = world:move(self, x, y, self.filter)
+  local actualX, actualY, cols, len = world:move(self, x, y, self.filter)
+  self.x, self.y = actualX, actualY
+
+  self.collisions = cols
+
+  for k, o in pairs(cols) do
+    if o.other.collide then
+      o.other:collide(self,o.item,o)
+    end
+  end
 end
 
 function dynamicObject:updatePhysics(dt)
@@ -236,17 +247,11 @@ function dynamicObject:update(dt)
   self:updatePhysics(dt)
 end
 
-function dynamicObject:filter(other) --=h Does dynamicoObj
-  if other.collide then
-    local side = other:collide(self)
-
-    if side then
-      return other.bounce and "bounce" or "slide"
-    else
-      return false
-    end
+function dynamicObject:filter(other)
+  if other.filter then
+    return other:filter(self)
   else
-    return "slide"
+    return "cross"
   end
 end
 
@@ -273,14 +278,15 @@ dynamicClasses[0] = playerObject
 playerObject:include(weight)
 
 function playerObject:initialize(x,y,w,h,spawnerSpriteID)
-  dynamicObject.initialize(self,x,y,w,h,97)
+  dynamicObject.initialize(self,x+1,y+1,w-2,h-1,97)
 end
 
 function playerObject:draw()
-  dynamicObject.draw(self)
+  Sprite(self.spriteID, self.x-1, self.y-1)
   if debug then
     local t = tostring(self.velocity)
     printOutlined(t,5,5)
+    printOutlined("- Collisions: "..#self.collisions,5,15)
   end
 end
 
@@ -299,7 +305,7 @@ local function loadTiles()
       tileObject(x*8, y*8, 8, 8, c)
     end
 
-    if DynamicSprites[c] then --=h What's left? I missed on somethings, the table tells if this sprite flags are set to tell it's a dynamic object.
+    if DynamicSprites[c] then
       local flag = SpriteMap.flags[c]
       local classID = rshift(flag,2)
 
@@ -337,7 +343,6 @@ end
 
 function _init()
   world = bump.newWorld(8*4)
-
   loadTiles()
 end
 
